@@ -1,0 +1,56 @@
+<!DOCTYPE log4j:configuration SYSTEM "log4j.dtd">
+<log4j:configuration xmlns:log4j="http://jakarta.apache.org/log4j/">
+    <!-- general application log -->
+    <appender name="MainLogFile" class="org.apache.log4j.DailyRollingFileAppender">
+        <param name="File" value="log/netty.log" />
+        <param name="DatePattern" value=".yyyy-MM-dd" />
+        <param name="Threshold" value="INFO" />
+        <layout class="org.apache.log4j.PatternLayout">
+            <param name="ConversionPattern" value="%d{ISO8601} %-5p (%t) [%c{1}(%M:%L)] %m%n"/>
+        </layout>
+    </appender>
+    <!-- app logging -->
+    <!-- Will Show Class C instead of c-->
+    <appender name="AppFile" class="org.apache.log4j.DailyRollingFileAppender">
+        <param name="File" value="log/app.log" />
+        <param name="DatePattern" value=".yyyy-MM-dd" />
+        <layout class="org.apache.log4j.PatternLayout">
+            <param name="ConversionPattern" value="%d{ISO8601} %-5p (%t) [%C{1}(%M:%L)] %m%n"/>
+        </layout>
+    </appender>
+
+    <!-- netty logging -->
+    <appender name="Netty" class="org.apache.log4j.DailyRollingFileAppender">
+        <param name="File" value="log/netty.log" />
+        <param name="DatePattern" value=".yyyy-MM-dd" />
+
+        <layout class="org.apache.log4j.PatternLayout">
+            <param name="ConversionPattern" value="%d{ISO8601} %-5p (%t) [%c{1}(%M:%L)] %m%n"/>
+        </layout>
+    </appender>
+
+    <!-- console logging -->
+    <appender name="Console" class="org.apache.log4j.ConsoleAppender">
+        <param name="Target" value="System.out"/>
+        <layout class="org.apache.log4j.PatternLayout">
+            <param name="ConversionPattern" value="%d{ISO8601} %-5p (%t) [%C{1}(%M:%L)] %m%n"/>
+        </layout>
+    </appender>
+
+    <!-- app logging -->
+    <logger name="app">
+        <level value="INFO"/>
+        <appender-ref ref="AppFile"/>
+    </logger>
+    <!-- netty logging -->
+    <logger name="io.netty">
+        <level value="ERROR"/> <!--Change to DEBUG for verbosity-->
+        <appender-ref ref="Netty"/>
+    </logger>
+    <!-- default logging -->
+    <root>
+        <level value="ALL"/>
+        <appender-ref ref="MainLogFile"/>
+        <appender-ref ref="Console"/>
+    </root>
+</log4j:configuration>

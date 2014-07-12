@@ -21,5 +21,19 @@ public class Gateway {
         this.meters = meters;
     }
 
+    public String getName() {
+        return name;
+    }
 
+    public String getHost() {
+        return host;
+    }
+
+    public int getPort() {
+        return port;
+    }
+
+    public List<Meter> getMeters() {
+        return meters;
+    }
 }

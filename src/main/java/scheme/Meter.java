@@ -8,12 +8,25 @@ import java.util.List;
 public class Meter {
 
     public final String tableName;
-    public final Integer modbusRtuAddress;
+    public final Byte modbusRtuAddress;
     public final List<Parameter> parameters;
 
-    public Meter(String tableName, Integer modbusRtuAddress, List<Parameter> parameters) {
+
+    public Meter(String tableName, Byte modbusRtuAddress, List<Parameter> parameters) {
         this.tableName = tableName;
         this.modbusRtuAddress = modbusRtuAddress;
         this.parameters = parameters;
+    }
+
+    public String getTableName() {
+        return tableName;
+    }
+
+    public Byte getModbusRtuAddress() {
+        return modbusRtuAddress;
+    }
+
+    public List<Parameter> getParameters() {
+        return parameters;
     }
 }

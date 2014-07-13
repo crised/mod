@@ -1,5 +1,7 @@
 package scheme;
 
+import com.google.common.primitives.Ints;
+
 import java.util.List;
 
 import static utils.Consts.*;
@@ -14,16 +16,56 @@ public class Parameter {
     public final Integer end_register;
 
     public final Integer checkInterval; // % operator returns the remainder of two numbers
-    public final Integer functionType;
+    public final Byte functionType;
 
-    public List<Byte> bytes;
+    public List<Byte> bytesRead;
 
-
-    public Parameter(String name, Integer start_register, Integer end_register) {
-        this.Id = name;
+    public Parameter(String id, Integer start_register, Integer end_register, Integer checkInterval, Byte functionType) {
+        Id = id;
         this.start_register = start_register;
         this.end_register = end_register;
-        this.checkInterval = INTERVAL_DEFAULT;
-        this.functionType = READ_HOLDING_REGISTERS;
+        this.checkInterval = checkInterval;
+        this.functionType = functionType;
+    }
+
+    public Byte numberOfRegisters(){
+
+        int start_register = this.start_register;
+        int end_register = this.end_register;
+
+        int numberOfRegisters = end_register - start_register;
+
+        byte[] bytes = Ints.toByteArray(numberOfRegisters);
+
+        return bytes[0];
+
+    }
+
+    public String getId() {
+        return Id;
+    }
+
+    public Integer getStart_register() {
+        return start_register;
+    }
+
+    public Integer getEnd_register() {
+        return end_register;
+    }
+
+    public Integer getCheckInterval() {
+        return checkInterval;
+    }
+
+    public Byte getFunctionType() {
+        return functionType;
+    }
+
+    public List<Byte> getBytesRead() {
+        return bytesRead;
+    }
+
+    public void setBytesRead(List<Byte> bytesRead) {
+        this.bytesRead = bytesRead;
     }
 }

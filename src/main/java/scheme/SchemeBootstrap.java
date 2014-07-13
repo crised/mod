@@ -37,7 +37,7 @@ public class SchemeBootstrap {
     private void initMeters() {
 
         //AgrosuperMeters
-        Meter meter1 = new Meter("agrosuper_norte_1", 0x05, parameters.getElnetList1());
+        Meter meter1 = new Meter("agrosuper_norte_1", (byte) 0x05, parameters.getElnetList1());
 
         //Now add to meter list
         meterList1.add(meter1);

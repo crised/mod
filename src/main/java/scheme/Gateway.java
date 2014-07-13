@@ -8,7 +8,7 @@ import java.util.List;
  */
 public class Gateway {
 
-    public final String name; //table_name
+    public final String name; //
     public final String host; // InetAddress.getByName(String host)
     public final int port;
     public final List<Meter> meters;

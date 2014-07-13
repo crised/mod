@@ -8,5 +8,8 @@ import io.netty.channel.ChannelFutureListener;
  */
 public class ChannelListener implements ChannelFutureListener {
 
+    @Override
+    public void operationComplete(ChannelFuture channelFuture) throws Exception {
 
+    }
 }

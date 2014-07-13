@@ -50,24 +50,22 @@ public class NettyHelper {
     }
 
 
-    private void sendMessagesTo(final Gateway gateway, List<List<Byte>> messages) {
+    public void sendMessagesTo(final Gateway gateway, List<Byte> message) {
 
         if (channelMap.get(gateway) == null) activateChannel(gateway); //It might take time to reconnect.
 
         final Channel channel = channelMap.get(gateway);
         if (channel == null) return; //Channel is still not ready, Maybe will be ready on next method call.
 
-        for (List<Byte> message : messages) {
             ChannelFuture f = channel.writeAndFlush(message); //Flush immediately so 1 call equals one tcp frame.
             f.addListener(new ChannelFutureListener() {
                 @Override
                 public void operationComplete(ChannelFuture channelFuture) throws Exception {
-                    if(!channelFuture.isSuccess()){
-                        channelMap.remove(channel);
+                    if (!channelFuture.isSuccess()) {
+                        channelMap.remove(channel); //Something might be wrong with the Channel. So we delete it.
                     }
                 }
             });
-        }
     }
 
 

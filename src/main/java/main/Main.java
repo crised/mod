@@ -1,14 +1,12 @@
 package main;
 
-import Modbus.MessageBuilder;
-import netty.NettyHelper;
+import modbus.MessageBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import scheme.Gateway;
 import scheme.Meter;
 import scheme.Parameter;
 
-import java.util.List;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -27,11 +25,14 @@ public class Main {
 
         final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
 
+
         scheduler.scheduleAtFixedRate(new Runnable() {
+
             @Override
             public void run() {
 
                 LOG.info("run");
+                if (appHelper == null) LOG.info("null");
 
                 for (Gateway gateway : appHelper.getGateways()) {
                     for (Meter meter : gateway.getMeters())
@@ -41,8 +42,16 @@ public class Main {
                 }
 
             }
-        }, 0, 30, TimeUnit.SECONDS);
+        }, 0, 10, TimeUnit.SECONDS);
 
+        Runtime.getRuntime().addShutdownHook(new Thread(new Runnable() {
+            public void run() {
+                System.out.println("hello");
+            }
+        }));
+
+
+        LOG.info("finish main");
 
     }
 

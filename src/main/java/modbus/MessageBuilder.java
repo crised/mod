@@ -1,4 +1,4 @@
-package Modbus;
+package modbus;
 
 import com.google.common.primitives.Bytes;
 import com.google.common.primitives.Ints;

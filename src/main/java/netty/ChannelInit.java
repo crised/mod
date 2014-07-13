@@ -3,6 +3,7 @@ package netty;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelPipeline;
+import netty.encoder.ModbusEncoder;
 import netty.outHandlers.LastOutboundHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,7 +20,10 @@ public class ChannelInit extends ChannelInitializer {
     protected void initChannel(Channel channel) throws Exception {
 
         ChannelPipeline pipeline = channel.pipeline();
-        pipeline.addLast("Last Outbound Handler", new LastOutboundHandler());
+        pipeline.addLast("1", new ModbusEncoder());
+        pipeline.addLast("2", new LastOutboundHandler());
+
+
 
 
     }

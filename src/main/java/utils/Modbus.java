@@ -16,7 +16,7 @@ public class Modbus {
     private static short trans_id;
     private final static Map<Short, Parameter> transMap = new HashMap<>();
 
-    //When writing Modbus Packet
+    //When writing modbus Packet
     public static List<Byte> getTransactionId(Parameter param) {
 
         if (trans_id == Short.MAX_VALUE) trans_id = 0;

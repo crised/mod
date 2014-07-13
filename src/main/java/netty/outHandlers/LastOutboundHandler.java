@@ -17,6 +17,7 @@ public class LastOutboundHandler extends ChannelOutboundHandlerAdapter {
 
 
 
+
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
         super.exceptionCaught(ctx, cause);

@@ -62,7 +62,11 @@ public class NettyHelper {
                 @Override
                 public void operationComplete(ChannelFuture channelFuture) throws Exception {
                     if (!channelFuture.isSuccess()) {
+                        channelFuture.channel().close();
                         channelMap.remove(channel); //Something might be wrong with the Channel. So we delete it.
+                        LOG.error("couldn't flush");
+                    } else{
+                        LOG.info("message sent");
                     }
                 }
             });
@@ -77,14 +81,14 @@ public class NettyHelper {
             @Override
             public void operationComplete(ChannelFuture channelFuture) throws Exception {
                 if (channelFuture.isSuccess()) {
+                    LOG.info("channel connected");
                     channelMap.put(gateway, channelFuture.channel());
                 } else {
-                    LOG.error("App Error");
+                    LOG.error(channelFuture.cause().getMessage());
                 }
             }
         });
     }
-
 
     public void shutDown() {
         bossGroup.shutdownGracefully();
@@ -94,17 +98,4 @@ public class NettyHelper {
 
 
 
-    /*  ChannelFuture f = b.connect(ip, port1);
-            //Cuando se conecte
-            f.addListener(new ChannelFutureListener() {
-
-                @Override
-                public void operationComplete(ChannelFuture channelFuture) throws Exception {
-                    Channel channel = channelFuture.channel();
-                    channel.writeAndFlush(Unpooled.copiedBuffer(bytes));
-
-                }
-
-
-            });*/
 }

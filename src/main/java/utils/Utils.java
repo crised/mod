@@ -9,7 +9,7 @@ import java.util.List;
  */
 public class Utils {
 
-    //Little endian. Modbus is a "big-endian" protocol: that is, the more significant byte of a 16-bit value is sent before the less significant byte.
+    //Little endian. modbus is a "big-endian" protocol: that is, the more significant byte of a 16-bit value is sent before the less significant byte.
 
 
 }

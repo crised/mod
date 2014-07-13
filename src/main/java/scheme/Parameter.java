@@ -1,7 +1,9 @@
 package scheme;
 
+import com.google.common.primitives.Bytes;
 import com.google.common.primitives.Ints;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static utils.Consts.*;
@@ -28,16 +30,20 @@ public class Parameter {
         this.functionType = functionType;
     }
 
-    public Byte numberOfRegisters(){
+    public List<Byte> dataInRequest(){
+
+        List<Byte> bytes = new ArrayList<>();
+        bytes.addAll(Bytes.asList(Ints.toByteArray(start_register)));
 
         int start_register = this.start_register;
         int end_register = this.end_register;
 
         int numberOfRegisters = end_register - start_register;
 
-        byte[] bytes = Ints.toByteArray(numberOfRegisters);
+        bytes.addAll(Bytes.asList(Ints.toByteArray(numberOfRegisters)));
 
-        return bytes[0];
+        return bytes;
+
 
     }
 

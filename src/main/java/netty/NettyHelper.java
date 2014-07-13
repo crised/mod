@@ -1,10 +1,7 @@
 package netty;
 
 import io.netty.bootstrap.Bootstrap;
-import io.netty.channel.Channel;
-import io.netty.channel.ChannelFuture;
-import io.netty.channel.ChannelFutureListener;
-import io.netty.channel.EventLoopGroup;
+import io.netty.channel.*;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioSocketChannel;
 import org.slf4j.Logger;
@@ -39,7 +36,7 @@ public class NettyHelper {
         b = new Bootstrap();
         b.group(bossGroup)
                 .channel(NioSocketChannel.class)
-                        //.option(ChannelOption.SO_KEEPALIVE, true)
+                .option(ChannelOption.SO_KEEPALIVE, true) // Robustel M1000Pro Supports it.
                 .handler(new ChannelInit());
 
         // 1 bootstrap object per each channel. cloned.
@@ -91,8 +88,10 @@ public class NettyHelper {
     }
 
     public void shutDown() {
+        for(Channel channel : channelMap.values()){
+            channel.close(); // Close the connections.
+        }
         bossGroup.shutdownGracefully();
-
     }
 
 

@@ -8,6 +8,10 @@ public final class Consts {
     private Consts() {
     }
 
+
+    public static final int MODBUS_TCP_PORT = 502;
+
+
     //Intervals
     public static final int INTERVAL_DEFAULT = 900; // Query Everything every 900 seconds - 15 min
 
@@ -33,5 +37,7 @@ public final class Consts {
     public static final String VOLT_PHASE_1_EL = "volt_phase_1_el";
     public static final String VOLT_PHASE_2_EL = "volt_phase_2_el";
     public static final String VOLT_PHASE_3_EL = "volt_phase_3_el";
+
+
 
 }

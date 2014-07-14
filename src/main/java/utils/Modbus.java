@@ -24,7 +24,7 @@ public class Modbus {
         //Transaction begins at 1.
         trans_id++;
         transMap.put(trans_id, param);
-        return Bytes.asList(Shorts.toByteArray(trans_id));
+        return Bytes.asList(Shorts.toByteArray(trans_id)).subList(0,2); //Only 2 Bytes
 
     }
 

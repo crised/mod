@@ -1,6 +1,5 @@
 package main;
 
-import modbus.MessageBuilder;
 import modbus.ModbusFrame;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -35,20 +34,27 @@ public class Main {
                 LOG.info("run");
                 if (appHelper == null) LOG.info("null");
 
-                for (Gateway gateway : appHelper.getGateways()) {
-                    for (Meter meter : gateway.getMeters())
-                        for (Parameter parameter : meter.getParameters()) {
-                            ModbusFrame modbusFrame = new ModbusFrame(meter, parameter);
-                            appHelper.getNettyHelper().sendMessagesTo(gateway, modbusFrame.getMessageBytes());
-                        }
+                try {
+
+                    for (Gateway gateway : appHelper.getGateways()) {
+                        for (Meter meter : gateway.getMeters())
+                            for (Parameter parameter : meter.getParameters()) {
+                                ModbusFrame modbusFrame = new ModbusFrame(meter, parameter);
+                                appHelper.getNettyHelper().sendMessagesTo(gateway, modbusFrame.getMessageBytes());
+                            }
+                    }
+
+                } catch (Exception e) {
+                    LOG.error(e.getMessage());
                 }
+
 
             }
         }, 0, 10, TimeUnit.SECONDS);
 
         Runtime.getRuntime().addShutdownHook(new Thread(new Runnable() {
             public void run() {
-              appHelper.getNettyHelper().shutDown();
+                appHelper.getNettyHelper().shutDown();
             }
         }));
 

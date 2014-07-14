@@ -21,15 +21,15 @@ public class Parameters {
     }
 
     private void initSatecList1() {
-        satecList1.add(new Parameter("volt_1_satec1", 2, 1, 1, (byte) 4));
+        satecList1.add(new Parameter("volt_1_satec1", 1, 2, 1, (byte) 4));
     }
 
     private void initSatecList2() {
-        satecList2.add(new Parameter("volt_1_satec2", 2, 1, 1, (byte) 4));
+        satecList2.add(new Parameter("volt_1_satec2", 1, 2, 1, (byte) 4));
     }
 
     private void initElnetList1() {
-        elnetList1.add(new Parameter("volt_1_elnet1", 2, 1, 1, (byte) 4));
+        elnetList1.add(new Parameter("volt_1_elnet1", 1, 2, 1, (byte) 4));
     }
 
     public List<Parameter> getSatecList1() {

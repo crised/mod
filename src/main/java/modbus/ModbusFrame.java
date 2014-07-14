@@ -10,6 +10,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 
+import static utils.Consts.*;
+
 /**
  * Created by crised on 7/13/14.
  */
@@ -29,23 +31,37 @@ public class ModbusFrame {
 
     //PDU - 1 Byte + data
     private Byte fCode;
-    private List<Byte> data;
+    private List<Byte> data; // In Request Always 4 Bytes.
+    // In Response 2 X Registers Number
+    // In Error Always 1 Byte.
 
 
-    //To Send requests.
-    public ModbusFrame(Meter meter, Parameter parameter) {
+    //Request ModbusFrame - 12 Bytes Long
+
+    public ModbusFrame(Meter meter, Parameter parameter) throws Exception {
+
         this.transId = getRandomTransId();
+        this.length = getLengthRequest();
         this.unitId = meter.getModbusRtuAddress();
         this.fCode = parameter.getFunctionType();
         this.data = parameter.dataInRequest();
-        this.length = getLength();
 
     }
 
+    private List<Byte> getLengthRequest() {
+        List<Byte> bytes = new ArrayList<>();
+        bytes.add((byte) 0x00);
+        bytes.add((byte) 0x06);
+        return bytes;
+    }
+
+
     private List<Byte> getLength() {
 
-        Integer count = 1 + data.size(); //unitId + data
-        return Bytes.asList(Ints.toByteArray(count));
+        Integer count = 2 + data.size(); //unitId + data
+        return Bytes.asList(Ints.toByteArray(count)).subList(0, 1);
+
+
     }
 
 
@@ -57,7 +73,7 @@ public class ModbusFrame {
 
     }
 
-    public List<Byte> getMessageBytes(){
+    public List<Byte> getMessageBytes() {
         List<Byte> message = new ArrayList<>();
         message.addAll(transId);
         message.addAll(protocolId);

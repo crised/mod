@@ -2,6 +2,7 @@ package scheme;
 
 import com.google.common.primitives.Bytes;
 import com.google.common.primitives.Ints;
+import utils.ModException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,24 +24,26 @@ public class Parameter {
     public List<Byte> bytesRead;
 
     public Parameter(String id, Integer start_register, Integer end_register, Integer checkInterval, Byte functionType) {
-        Id = id;
+        this.Id = id;
         this.start_register = start_register;
         this.end_register = end_register;
         this.checkInterval = checkInterval;
         this.functionType = functionType;
     }
 
-    public List<Byte> dataInRequest(){
+    public List<Byte> dataInRequest() throws Exception{
 
         List<Byte> bytes = new ArrayList<>();
-        bytes.addAll(Bytes.asList(Ints.toByteArray(start_register)));
+        bytes.addAll(Bytes.asList(Ints.toByteArray(start_register)).subList(2,4));
 
         int start_register = this.start_register;
         int end_register = this.end_register;
 
         int numberOfRegisters = end_register - start_register;
 
-        bytes.addAll(Bytes.asList(Ints.toByteArray(numberOfRegisters)));
+        if(numberOfRegisters>=125) throw new ModException("Quantity of registers are too much");
+
+        bytes.addAll(Bytes.asList(Ints.toByteArray(numberOfRegisters)).subList(2,4));
 
         return bytes;
 

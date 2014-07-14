@@ -40,9 +40,12 @@ public class NettyHelper {
                 .handler(new ChannelInit());
 
         // 1 bootstrap object per each channel. cloned.
+        // Connect all Channels
         for (Gateway gateway : gateways) {
             bootstrapMap.put(gateway, b.clone().remoteAddress(gateway.getHost(), gateway.getPort()));
+            activateChannel(gateway);
         }
+
 
     }
 
@@ -60,7 +63,12 @@ public class NettyHelper {
                 public void operationComplete(ChannelFuture channelFuture) throws Exception {
                     if (!channelFuture.isSuccess()) {
                         channelFuture.channel().close();
-                        channelMap.remove(channel); //Something might be wrong with the Channel. So we delete it.
+                        channelFuture.addListener(new ChannelFutureListener() {
+                            @Override
+                            public void operationComplete(ChannelFuture channelFuture) throws Exception {
+                                channelMap.remove(channel); //Only once it's closed we delete it. //We avoid having 2 connections with one Gateway.
+                            }
+                        });
                         LOG.error("couldn't flush");
                     } else{
                         LOG.info("message sent");

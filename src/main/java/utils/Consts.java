@@ -19,6 +19,8 @@ public final class Consts {
     public static final int READ_HOLDING_REGISTERS = 0x03;
     public static final int READ_INPUT_REGISTERS = 0x04; // Read-Only
 
+
+
     //modbus Exceptions
     public static final int MODBUS_ILLEGAL_FUNCTION = 0x02;
     public static final int MODBUS_ILLEGAL_DATA_ADDRESS = 0x02;

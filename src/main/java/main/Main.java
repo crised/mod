@@ -19,13 +19,17 @@ public class Main {
     static final Logger LOG = LoggerFactory.getLogger("Main");
 
 
-    public static void main(String args[]) {
+    public static void main(String args[]) throws Exception{
 
+        /*
         final AppHelper appHelper = new AppHelper();
 
         final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
 
 
+        //TODO: Initialize ModbusMessage here, to see an Exception if any at the beginning.
+        //TODO: Get this logic Helper Method
+        //TODO: Fix transactionid
         scheduler.scheduleAtFixedRate(new Runnable() {
 
             @Override
@@ -59,7 +63,7 @@ public class Main {
         }));
 
 
-        LOG.info("finish main");
+        LOG.info("finish main");*/
 
     }
 

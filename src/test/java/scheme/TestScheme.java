@@ -12,6 +12,7 @@ import org.testng.annotations.Test;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 import java.util.TimeZone;
 
 /**
@@ -20,6 +21,16 @@ import java.util.TimeZone;
 public class TestScheme {
 
     static final Logger LOG = LoggerFactory.getLogger("TestScheme");
+
+
+    @Test
+    public void testEnumBootstrap() throws  Exception{
+
+        EnumBootstrap enumBootstrap = new EnumBootstrap();
+        List<ModbusMessage> modbusMessagesList = enumBootstrap.getModbusMessagesList();
+        LOG.info("finish");
+
+    }
 
 
 

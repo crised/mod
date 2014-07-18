@@ -7,13 +7,15 @@ import java.util.List;
  */
 public class Meter {
 
-    public final String tableName;
-    public final Byte modbusRtuAddress;
-    public final List<Parameter> parameters;
+    private final String tableName;
+    private final Gateway gateway;
+    private final Byte modbusRtuAddress;
+    private final List<Parameter> parameters;
 
 
-    public Meter(String tableName, Byte modbusRtuAddress, List<Parameter> parameters) {
+    public Meter(String tableName, Gateway gateway, Byte modbusRtuAddress, List<Parameter> parameters) {
         this.tableName = tableName;
+        this.gateway = gateway;
         this.modbusRtuAddress = modbusRtuAddress;
         this.parameters = parameters;
     }
@@ -28,5 +30,9 @@ public class Meter {
 
     public List<Parameter> getParameters() {
         return parameters;
+    }
+
+    public Gateway getGateway() {
+        return gateway;
     }
 }

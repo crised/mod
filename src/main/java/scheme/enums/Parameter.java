@@ -1,11 +1,14 @@
 package scheme.enums;
 
+import com.sun.org.apache.xpath.internal.operations.Mod;
+import utils.ModException;
+
 import static utils.Consts.*;
 
 /**
  * Created by crised on 7/17/14.
  */
-public enum Parameter {
+public enum Parameter  {
 
     //Elnet Registers
 
@@ -17,13 +20,15 @@ public enum Parameter {
     V1_VOLT_DEMAND(14592, 14593, SATEC), V2_VOLT_DEMAND(14594, 14595, SATEC), V3_VOLT_DEMAND(14596, 14597, SATEC);
 
 
-    private int startReg;
-    private int endReg;
-    private int meterModel;
+    private Integer startReg;
+    private Integer endReg;
+    private Integer meterModel;
     private Byte functionCode;
-    private int frequency;
+    private Integer frequency;
 
-    Parameter(int startReg, int endReg, int meterModel) {
+
+    Parameter(int startReg, int endReg, int meterModel) throws ExceptionInInitializerError {
+        if (startReg >= MODBUS_MAX_ADDRESS || endReg >= MODBUS_MAX_ADDRESS) throw new ExceptionInInitializerError("enum");
         this.startReg = startReg;
         this.endReg = endReg;
         this.meterModel = meterModel;
@@ -32,23 +37,21 @@ public enum Parameter {
 
     }
 
-    Parameter(int startReg, int endReg, int meterModel, Byte functionCode, int frequency) {
-        this.startReg = startReg;
-        this.endReg = endReg;
-        this.meterModel = meterModel;
+    Parameter(int startReg, int endReg, int meterModel, Byte functionCode, Integer frequency) throws Exception {
+        this(startReg, endReg, meterModel);
         this.functionCode = functionCode;
         this.frequency = frequency;
     }
 
-    public int getStartReg() {
+    public Integer getStartReg() {
         return startReg;
     }
 
-    public int getEndReg() {
+    public Integer getEndReg() {
         return endReg;
     }
 
-    public int getMeterModel() {
+    public Integer getMeterModel() {
         return meterModel;
     }
 
@@ -56,7 +59,7 @@ public enum Parameter {
         return functionCode;
     }
 
-    public int getFrequency() {
+    public Integer getFrequency() {
         return frequency;
     }
 }

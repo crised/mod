@@ -56,14 +56,7 @@ public class DynamoDbHelper {
 
     }
 
-    public String getTimeStamp(){
 
-        //ISO8601 ms precision
-        DateTime dt = new DateTime(DateTimeZone.UTC);
-        DateTimeFormatter fmt = ISODateTimeFormat.basicDateTime();
-        return fmt.print(dt);
-
-    }
 
 
 }

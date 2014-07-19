@@ -1,37 +1,31 @@
 package main;
 
-import com.google.common.primitives.Bytes;
-import com.google.common.primitives.Shorts;
 import netty.NettyHelper;
-import scheme.Gateway;
-import scheme.ModbusMessage;
-import scheme.Parameter;
+import scheme.EnumBootstrap;
+import scheme.GroupMessage;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static utils.Consts.*;
-
 /**
  * Created by crised on 7/12/14.
  */
-public class AppHelper  {
-/*
-    private List<Gateway> gateways;
+public class AppHelper {
     private NettyHelper nettyHelper;
 
-    private static short trans_id;
-    private final static Map<Short, ModbusMessage> transMap = new HashMap<>();
+    private final static short trans_id = 0;
+    private final static Map<Short, GroupMessage> transMap = new HashMap<>();
+    //Once stored in DynamoDb, it's removed.
+    //Only "GOOD" GroupMessage should be stored here, if there is an error, they should be removed.
 
-    public AppHelper() {
+    public AppHelper() throws Exception {
 
-        SchemeBootstrap schemeBootstrap = new SchemeBootstrap();
-        gateways = schemeBootstrap.getGatewayList();
-        nettyHelper = new NettyHelper(gateways);
+        EnumBootstrap enumBootstrap = new EnumBootstrap();
+        nettyHelper = new NettyHelper(enumBootstrap.getGatewayList());
 
     }
-
+/*
     //When writing modbus Packet
     public List<Byte> getTransactionId(Parameter param) {
 
@@ -50,14 +44,6 @@ public class AppHelper  {
         trans = Shorts.fromByteArray(Bytes.toArray(transBytes));
         return transMap.get(trans); //null if no mapping
     }
-
-    public List<Gateway> getGateways() {
-        return gateways;
-    }
-
-
-
-    public NettyHelper getNettyHelper() {
-        return nettyHelper;
-    }*/
+*/
 }
+

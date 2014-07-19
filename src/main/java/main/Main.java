@@ -1,6 +1,6 @@
 package main;
 
-import modbus.ModbusFrame;
+import modbus.Frame;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import scheme.Gateway;
@@ -19,8 +19,12 @@ public class Main {
     static final Logger LOG = LoggerFactory.getLogger("Main");
 
 
-    public static void main(String args[]) throws Exception{
+    public static void main(String args[]) throws Exception {
 
+        LOG.info("hi");
+
+    }
+}
         /*
         final AppHelper appHelper = new AppHelper();
 
@@ -43,8 +47,8 @@ public class Main {
                     for (Gateway gateway : appHelper.getGateways()) {
                         for (Meter meter : gateway.getMeters())
                             for (Parameter parameter : meter.getParameters()) {
-                                ModbusFrame modbusFrame = new ModbusFrame(meter, parameter);
-                                appHelper.getNettyHelper().sendMessagesTo(gateway, modbusFrame.getMessageBytes());
+                                Frame frame = new Frame(meter, parameter);
+                                appHelper.getNettyHelper().sendMessagesTo(gateway, frame.getMessageBytes());
                             }
                     }
 
@@ -63,9 +67,9 @@ public class Main {
         }));
 
 
-        LOG.info("finish main");*/
+        LOG.info("finish main");
 
-    }
+    }*/
 
 
-}
+

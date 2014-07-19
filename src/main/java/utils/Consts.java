@@ -18,6 +18,7 @@ public final class Consts {
     //modbus 16 bit access
     public static final Byte READ_HOLDING_REGISTERS = (byte) 0x03;
     public static final Byte READ_INPUT_REGISTERS =  (byte) 0x04; // Read-Only
+    public static final Integer MODBUS_MAX_ADDRESS = 65535;
 
 
     //modbus Exceptions
@@ -44,17 +45,21 @@ public final class Consts {
     public static final int SATEC = 1;
 
     //Parameter Default frequencies - Checking thread will pass once every 1 min.
-    public static final int EVERY_1_MIN = 1;
-    public static final int EVERY_5_MIN = 5;
-    public static final int EVERY_10_MIN = 10;
-    public static final int EVERY_15_MIN = 15;
-    public static final int EVERY_30_MIN = 30;
-    public static final int EVERY_60_MIN = 60;
-    public static final int EVERY_120_MIN = 120;
+    public static final Integer EVERY_1_MIN = 1;
+    public static final Integer EVERY_5_MIN = 5;
+    public static final Integer EVERY_10_MIN = 10;
+    public static final Integer EVERY_15_MIN = 15;
+    public static final Integer EVERY_30_MIN = 30;
+    public static final Integer EVERY_60_MIN = 60;
+    public static final Integer EVERY_120_MIN = 120;
 
     //Max transactions to keep in memory
-    public static final int MAX_NUMBER_TRANSACTIONS = 100;
+    public static final Integer MAX_NUMBER_TRANSACTIONS = 100;
 
+    //Byte interpretation
+
+    //modExceptions
+    public static final String INCORRECT_RESPONSE_DATA = "Incorrect Response Data";
 
 
 

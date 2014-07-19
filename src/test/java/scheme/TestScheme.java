@@ -1,19 +1,13 @@
 package scheme;
 
-import aws.DynamoDbHelper;
-import org.joda.time.DateTime;
-import org.joda.time.DateTimeZone;
-import org.joda.time.format.DateTimeFormatter;
-import org.joda.time.format.ISODateTimeFormat;
+import com.google.common.primitives.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.testng.Assert;
 import org.testng.annotations.Test;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.Date;
+import java.nio.ByteBuffer;
 import java.util.List;
-import java.util.TimeZone;
 
 /**
  * Created by crised on 7/9/14.
@@ -22,18 +16,37 @@ public class TestScheme {
 
     static final Logger LOG = LoggerFactory.getLogger("TestScheme");
 
-
     @Test
-    public void testEnumBootstrap() throws  Exception{
+    public void testEnumBootstrap() throws Exception {
 
         EnumBootstrap enumBootstrap = new EnumBootstrap();
-        List<ModbusMessage> modbusMessagesList = enumBootstrap.getModbusMessagesList();
-        LOG.info("finish");
-
+        List<GroupMessage> groupMessagesList = enumBootstrap.getGroupMessagesList();
+        for (Meter meter : enumBootstrap.getMeterList()) {
+            int size = 0;
+            for (GroupMessage groupMessage : groupMessagesList) {
+                if (groupMessage.getMeter() == meter)
+                    size = size + groupMessage.getParameterList().size();
+            }
+            Assert.assertEquals(meter.getParameters().size(), size, "Size of Meters Params don't match");
+        }
     }
 
+    @Test
+    private void complementTwo(){
+
+        int test = UnsignedBytes.toInt((byte) 0xFF);
+        long test2 = UnsignedInts.toLong(0xFFFF);
+
+        Integer maxModbusRegister = 65535;
+
+        byte[] bytes = ByteBuffer.allocate(2).put(Ints.toByteArray(maxModbusRegister),2,2).array();// {-1, -1} == 0xFFFF
+
+        LOG.info("");
 
 
+
+
+    }
 
 
 }

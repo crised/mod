@@ -1,10 +1,6 @@
 package scheme;
 
-import com.google.common.primitives.Bytes;
-import com.google.common.primitives.Ints;
-import utils.ModException;
-
-import java.util.ArrayList;
+import java.nio.ByteBuffer;
 import java.util.List;
 
 /**
@@ -12,40 +8,28 @@ import java.util.List;
  */
 public class Parameter {
 
+    //Modbus up to 65536 in register address.
+    // 1 Modbus Register 16 bits
+    // Parameters can have either 1 register or 2, 16 or 32 Bits.
+
     private final String Id; //low case, attribute Id, column Id. THIS IS A PRIMARY KEY - Uniquer to any Parameter.
     private final Integer startRegister;
     private final Integer endRegister;
+    private final Integer size; //1 or 2
 
     private final Byte functionType;
     private final Integer frequency; // % operator returns the remainder of two numbers
 
 
-    private List<Byte> bytesRead;
+    private ByteBuffer responseBytes; //Goes Directly to DynamoDB.
 
     public Parameter(String id, Integer startRegister, Integer endRegister, Byte functionType, Integer frequency) {
         Id = id;
         this.startRegister = startRegister;
         this.endRegister = endRegister;
+        this.size = (endRegister - startRegister + 1);
         this.functionType = functionType;
         this.frequency = frequency;
-    }
-
-    public List<Byte> dataInRequest() throws Exception{
-
-        List<Byte> bytes = new ArrayList<>();
-        bytes.addAll(Bytes.asList(Ints.toByteArray(startRegister)).subList(2,4));
-
-        int start_register = this.startRegister;
-        int end_register = this.endRegister;
-
-        int numberOfRegisters = end_register - start_register;
-
-        if(numberOfRegisters>=125) throw new ModException("Quantity of registers are too much");
-
-        bytes.addAll(Bytes.asList(Ints.toByteArray(numberOfRegisters)).subList(2,4));
-
-        return bytes;
-
 
     }
 
@@ -61,19 +45,23 @@ public class Parameter {
         return endRegister;
     }
 
-    public Integer getFrequency() {
-        return frequency;
+    public Integer getSize() {
+        return size;
     }
 
     public Byte getFunctionType() {
         return functionType;
     }
 
-    public List<Byte> getBytesRead() {
-        return bytesRead;
+    public Integer getFrequency() {
+        return frequency;
     }
 
-    public void setBytesRead(List<Byte> bytesRead) {
-        this.bytesRead = bytesRead;
+    public ByteBuffer getResponseBytes() {
+        return responseBytes;
+    }
+
+    public void setResponseBytes(ByteBuffer responseBytes) {
+        this.responseBytes = responseBytes;
     }
 }

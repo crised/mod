@@ -1,5 +1,6 @@
 package scheme;
 
+import modbus.ModbusRequestFrame;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import utils.ModException;
@@ -25,7 +26,10 @@ public class EnumBootstrap {
     private final List<Meter> meterList;
 
     //List of ModbusMessages
-    private final List<ModbusMessage> modbusMessagesList;
+    private final List<GroupMessage> groupMessagesList;
+
+    //List of Modbus Requests
+    private final List<ModbusRequestFrame> modbusRequestFrameList;
 
 
     public EnumBootstrap() throws Exception {
@@ -35,7 +39,8 @@ public class EnumBootstrap {
         parameterList2 = new ArrayList<>();
         parameterListExtremeMonitor = new ArrayList<>();
         meterList = new ArrayList<>();
-        modbusMessagesList = new ArrayList<>();
+        groupMessagesList = new ArrayList<>();
+        modbusRequestFrameList = new ArrayList<>();
 
         // Gateway List
 
@@ -47,6 +52,8 @@ public class EnumBootstrap {
         // Parameter List
 
         for (scheme.enums.Parameter parameter : scheme.enums.Parameter.values()) {
+
+            if (parameter.getStartReg() >= MODBUS_MAX_ADDRESS) throw new ModException();
             switch (parameter.getMeterModel()) {
 
                 case ELNET:
@@ -87,7 +94,12 @@ public class EnumBootstrap {
             getGroupParameterList(meter);
         }
 
-
+        // ModbusRequestlist
+        // 1:1 relationship, 1 groupMessage : 1 RequestMessage
+        // groupMessagesList.get(i) == modbusRequestFrameList.get(i)
+        for(GroupMessage groupMessage : groupMessagesList){
+            modbusRequestFrameList.add(new ModbusRequestFrame(groupMessage));
+        }
 
 
     }
@@ -100,6 +112,7 @@ public class EnumBootstrap {
         Integer lastRegister = null;
         Integer lastFrequency = null;
         Byte lastFunctionType = null;
+        Integer lastQuantityOfRegister = null;
 
         List<Parameter> parameterList = meter.getParameters();
 
@@ -112,10 +125,11 @@ public class EnumBootstrap {
             else {
                 if ((lastRegister + 1) == parameter.getStartRegister()
                         && lastFrequency == parameter.getFrequency()
-                        && lastFunctionType == parameter.getFunctionType()) {
+                        && lastFunctionType == parameter.getFunctionType()
+                        && lastQuantityOfRegister ==parameter.getSize()) {
                     auxList.add(parameter);
                 } else {
-                    modbusMessagesList.add(new ModbusMessage(meter, new ArrayList<>(auxList)));
+                    groupMessagesList.add(new GroupMessage(meter, new ArrayList<>(auxList)));
                     auxList.clear();
                     auxList.add(parameter);
                 }
@@ -123,8 +137,12 @@ public class EnumBootstrap {
             lastRegister = parameter.getEndRegister();
             lastFrequency = parameter.getFrequency();
             lastFunctionType = parameter.getFunctionType();
+            lastQuantityOfRegister = parameter.getSize();
 
-            if (!iter.hasNext()) modbusMessagesList.add(new ModbusMessage(meter, auxList));
+
+            if (auxList.size() > 120) throw new ModException("Maximum Size of Modbus Frame Exceed");
+
+            if (!iter.hasNext()) groupMessagesList.add(new GroupMessage(meter, auxList));
         }
 
 
@@ -137,7 +155,17 @@ public class EnumBootstrap {
         throw new ModException("Can't find Gateway");
     }
 
-    public List<ModbusMessage> getModbusMessagesList() {
-        return modbusMessagesList;
+
+    public List<Gateway> getGatewayList() {
+        return gatewayList;
+    }
+
+    public List<Meter> getMeterList() {
+        return meterList;
+    }
+
+
+    public List<GroupMessage> getGroupMessagesList() {
+        return groupMessagesList;
     }
 }

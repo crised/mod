@@ -35,6 +35,7 @@ public class GroupMessage {
 
     private int passes;
 
+
     public GroupMessage(Meter meter, List<Parameter> parameterList) {
 
         this.meter = meter;

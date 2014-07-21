@@ -40,7 +40,7 @@ public class TestServer {
                     .option(ChannelOption.SO_BACKLOG, 128)
                     .childOption(ChannelOption.SO_KEEPALIVE, true);
 
-            ChannelFuture future = b.bind(8002).sync();
+            ChannelFuture future = b.bind(8001).sync();
 
             LOG.info("Server Ready");
 

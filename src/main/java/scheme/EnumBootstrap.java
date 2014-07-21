@@ -29,7 +29,9 @@ public class EnumBootstrap {
     private final List<GroupMessage> groupMessagesList;
 
     //List of Modbus Requests
-    private final List<ModbusRequestFrame> modbusRequestFrameList;
+    //private final List<ModbusRequestFrame> modbusRequestFrameList; Wrong Because each time they have
+    // different transaction Ids.
+    //
 
 
     public EnumBootstrap() throws Exception {
@@ -40,7 +42,6 @@ public class EnumBootstrap {
         parameterListExtremeMonitor = new ArrayList<>();
         meterList = new ArrayList<>();
         groupMessagesList = new ArrayList<>();
-        modbusRequestFrameList = new ArrayList<>();
 
         // Gateway List
 
@@ -94,19 +95,10 @@ public class EnumBootstrap {
             getGroupParameterList(meter);
         }
 
-        // ModbusRequestlist
-        // 1:1 relationship, 1 groupMessage : 1 RequestMessage
-        // groupMessagesList.get(i) == modbusRequestFrameList.get(i)
+        //fill in GroupMessageMap
         for (GroupMessage groupMessage : groupMessagesList) {
-            try {
-                modbusRequestFrameList.add(new ModbusRequestFrame(groupMessage));
-            } catch (Exception e) {
-                LOG.error(e.getMessage());
-                throw new ModException(e.getMessage());
-            }
+            groupMessageMap.put(groupMessage.hashCode(), groupMessage);
         }
-
-
     }
 
 

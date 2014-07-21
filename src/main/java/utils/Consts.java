@@ -1,5 +1,13 @@
 package utils;
 
+import scheme.GroupMessage;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+
 /**
  * Created by crised on 7/9/14.
  */
@@ -8,8 +16,19 @@ public final class Consts {
     private Consts() {
     }
 
+    //Hash Id of every GroupMessage
+    public final static Map<Integer, GroupMessage> groupMessageMap = new ConcurrentHashMap<>();
 
-    public static final int MODBUS_TCP_PORT = 502;
+    //TransMap
+    public final static Map<Integer, Integer> transIdMap = new ConcurrentHashMap<>();
+    //TransId will be deleted once stored in the Queue.
+
+
+    public final static List<GroupMessage> groupMessageQueue = new ArrayList<>();
+    //Once stored in DynamoDb, it's removed.
+
+
+    public static final int MODBUS_TCP_PORT = 8001; //502
 
 
     //Intervals

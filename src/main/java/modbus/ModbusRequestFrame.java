@@ -1,5 +1,7 @@
 package modbus;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import scheme.GroupMessage;
 
 import java.nio.ByteBuffer;
@@ -11,16 +13,24 @@ import java.util.Random;
  */
 public class ModbusRequestFrame extends Frame {
 
+    static final Logger LOG = LoggerFactory.getLogger("ModbusRequestFrame");
+
+
     public ModbusRequestFrame(GroupMessage groupMessage) {
+        super();
         //Request ModbusFrame - 12 Bytes Long
         this.transId = getRandomTransId();
+        this.transId.rewind();
         this.length = getRequestLength();
+        this.length.rewind();
         this.unitId = groupMessage.getMeter().getModbusRtuAddress();
         this.fCode = groupMessage.getFunctionCode();
         this.data = groupMessage.getRequestData();
+        this.data.rewind();
     }
 
     private ByteBuffer getRandomTransId() {
+        //It's not sequential.
         byte[] b = new byte[2];
         new Random().nextBytes(b);
         return ByteBuffer.wrap(b);
@@ -31,8 +41,11 @@ public class ModbusRequestFrame extends Frame {
     }
 
     public ByteBuffer getMessageBytes() {
-        return ByteBuffer.allocate(12).put(transId).put(protocolId)
+        ByteBuffer byteBuffer = ByteBuffer.allocate(12).put(transId).put(protocolId)
                 .put(length).put(unitId).put(fCode).put(data);
+        LOG.info("");
+        byteBuffer.rewind();
+        return  byteBuffer;
     }
 
 

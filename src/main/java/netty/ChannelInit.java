@@ -3,8 +3,8 @@ package netty;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelPipeline;
-import netty.encoder.ModbusEncoder;
-import netty.outHandlers.LastOutboundHandler;
+import netty.handlers.ModbusEncoder;
+import netty.handlers.LastOutboundHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

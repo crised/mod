@@ -1,4 +1,4 @@
-package netty.decoder;
+package netty.handlers;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;

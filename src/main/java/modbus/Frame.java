@@ -16,8 +16,8 @@ public abstract class Frame {
 
     //MBAP HEADER - 7 Bytes
     protected ByteBuffer transId; // 2 Bytes
-    protected final ByteBuffer protocolId = ByteBuffer.allocate(2).put((byte) 0).put((byte) 0); // Always 0x0000 2
-    protected ByteBuffer length; // 2 Bytes. unitId + data
+    protected final ByteBuffer protocolId; // Always 0x0000 2
+       protected ByteBuffer length; // 2 Bytes. unitId + data
     protected Byte unitId;
 
     //PDU - 1 Byte + data
@@ -26,26 +26,14 @@ public abstract class Frame {
     //Data
     protected ByteBuffer data;
 
+    protected Frame() {
 
+        protocolId = ByteBuffer.allocate(2).put((byte) 0).put((byte) 0);
+        protocolId.rewind();
+    }
 
     public ByteBuffer getTransId() {
         return transId;
-    }
-
-    public ByteBuffer getProtocolId() {
-        return protocolId;
-    }
-
-    public ByteBuffer getLength() {
-        return length;
-    }
-
-    public Byte getUnitId() {
-        return unitId;
-    }
-
-    public Byte getfCode() {
-        return fCode;
     }
 
     public ByteBuffer getData() {

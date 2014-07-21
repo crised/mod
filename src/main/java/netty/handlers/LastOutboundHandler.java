@@ -1,4 +1,4 @@
-package netty.outHandlers;
+package netty.handlers;
 
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelOutboundHandlerAdapter;

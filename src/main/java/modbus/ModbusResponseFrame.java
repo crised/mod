@@ -23,6 +23,8 @@ public class ModbusResponseFrame extends Frame {
 
     public ModbusResponseFrame(ByteBuffer in) throws Exception {
 
+        super();
+
         //{transId, TransId, ProtocolId, ProtocolId,
         //{length, length, unitId, fCode,
         //{byte1_1, byte2_1, byte1_2, byte2_2... n x2.
@@ -30,8 +32,8 @@ public class ModbusResponseFrame extends Frame {
         //ByteBuffer.wrap(in.array(), 4, 2);
 
         try {
-            in.position(0);
-            this.transId = ByteBuffer.allocate(2).put(in.get()).put(in.get());
+            in.rewind();
+            this.transId = (ByteBuffer) ByteBuffer.allocate(2).put(in.get()).put(in.get());
 
             if (this.protocolId.array() !=
                     ByteBuffer.allocate(2).put(in.get()).put(in.get()).array())

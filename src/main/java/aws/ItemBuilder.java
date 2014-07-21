@@ -8,6 +8,7 @@ import org.joda.time.format.ISODateTimeFormat;
 import scheme.GroupMessage;
 import scheme.Parameter;
 
+import java.nio.ByteBuffer;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -16,6 +17,8 @@ import java.util.Map;
  * Created by crised on 7/19/14.
  */
 public class ItemBuilder {
+
+    //Responses
 
     private List<Map<String, AttributeValue>> items;
 
@@ -28,9 +31,8 @@ public class ItemBuilder {
             item.put("TIMESTAMP", new AttributeValue(getTimeStamp()));
             item.put("StartReg", new AttributeValue().withN(String.valueOf(parameter.getStartRegister())));
             item.put("EndReg", new AttributeValue().withN(String.valueOf(parameter.getEndRegister())));
-            item.put("FunctionCode", new AttributeValue());
-            item.put("EndReg", new AttributeValue().withN(String.valueOf(parameter.getEndRegister())));
-            item.put("EndReg", new AttributeValue().withN(String.valueOf(parameter.getEndRegister())));
+            item.put("FunctionCode", new AttributeValue().withB(ByteBuffer.allocate(1).put(parameter.getFunctionType())));
+            item.put("Data", new AttributeValue().withB(parameter.getResponseBytes()));
 
 
         }

@@ -11,7 +11,7 @@ import java.util.Random;
  */
 public class ModbusRequestFrame extends Frame {
 
-    public ModbusRequestFrame(GroupMessage groupMessage) throws Exception {
+    public ModbusRequestFrame(GroupMessage groupMessage) {
         //Request ModbusFrame - 12 Bytes Long
         this.transId = getRandomTransId();
         this.length = getRequestLength();

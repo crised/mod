@@ -22,9 +22,10 @@ public abstract class Frame {
 
     //PDU - 1 Byte + data
     protected Byte fCode;
+
+    //Data
     protected ByteBuffer data;
-    // In Response 2 X Registers Number
-    // In Error Always 1 Byte.
+
 
 
     public ByteBuffer getTransId() {
@@ -50,7 +51,4 @@ public abstract class Frame {
     public ByteBuffer getData() {
         return data;
     }
-
-
-
 }

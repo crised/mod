@@ -17,6 +17,9 @@ public class ModbusResponseFrame extends Frame {
 
     static final Logger LOG = LoggerFactory.getLogger("ModbusResponseFrame");
 
+    private Byte byteCount; //Only in response.
+
+
 
     public ModbusResponseFrame(ByteBuffer in) throws Exception {
 
@@ -27,7 +30,6 @@ public class ModbusResponseFrame extends Frame {
         //ByteBuffer.wrap(in.array(), 4, 2);
 
         try {
-
             in.position(0);
             this.transId = ByteBuffer.allocate(2).put(in.get()).put(in.get());
 
@@ -38,24 +40,16 @@ public class ModbusResponseFrame extends Frame {
             this.length = ByteBuffer.allocate(2).put(in.get()).put(in.get());
             this.unitId = in.get();
             this.fCode = in.get();
+            this.byteCount = in.get(); //Only in response Frame.
+            if (in.remaining() % 2 != 0) throw new ModException("Register Value Should be Pair");
             this.data = Utils.getByteBufferFromRemainingBytes(in);
         } catch (RuntimeException e) {
             LOG.error(e.getMessage());
             throw new ModException(e.getMessage());
-
         }
-
-
     }
 
-
-
-
-
-
-    /*
-    private List<Byte> getLength() {
-        Integer count = 2 + data.size(); //unitId + data
-        return Bytes.asList(Ints.toByteArray(count)).subList(0, 1);
-    }*/
+    public Byte getByteCount() {
+        return byteCount;
+    }
 }

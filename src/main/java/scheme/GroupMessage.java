@@ -5,6 +5,7 @@ import com.google.common.primitives.Bytes;
 import com.google.common.primitives.Ints;
 import modbus.ModbusErrorFrame;
 import modbus.ModbusResponseFrame;
+import utils.ModException;
 
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
@@ -43,8 +44,8 @@ public class GroupMessage {
         this.frequency = parameterList.get(0).getFrequency();
         this.functionCode = parameterList.get(0).getFunctionType();
         this.parameterSize = parameterList.get(0).getSize();
-        this.requestData = ByteBuffer.allocate(4).put(Ints.toByteArray(firstQueryRegister),2,2).
-                put(Ints.toByteArray(quantityOfRegisters),2,2);
+        this.requestData = ByteBuffer.allocate(4).put(Ints.toByteArray(firstQueryRegister), 2, 2).
+                put(Ints.toByteArray(quantityOfRegisters), 2, 2);
 
 
     }
@@ -55,25 +56,17 @@ public class GroupMessage {
         return false;
     }
 
-    public void setResponse(ModbusResponseFrame responseFrame) throws Exception{
+    public void setResponse(ModbusResponseFrame responseFrame) throws Exception {
 
-        //List<Byte> responseData = responseFrame.getData();
+        if (responseFrame.getByteCount() != parameterList.size() * 2)
+            throw new ModException("Quantity of Register Do Not Match");
 
-        /*
-        int inclusiveIndex = 0;
-        int exclusiveIndex = this.parameterSize;
+        ByteBuffer regValues = responseFrame.getData();
+
         for (Parameter parameter : parameterList) {
-            try {
-                parameter.setResponseBytes(new ArrayList<>(responseData.subList(inclusiveIndex, exclusiveIndex)));
-                inclusiveIndex = inclusiveIndex + this.parameterSize;
-                exclusiveIndex = exclusiveIndex + this.parameterSize;
-            } catch (IndexOutOfBoundsException e) {
+            parameter.setResponseBytes(ByteBuffer.allocate(2).put(regValues.get()).put(regValues.get()));
+        }
 
-                for(Parameter checkParameter : parameterList){
-                    if(checkParameter.getResponseBytes() == null) throw new ModException("Not all parameters values were filled");
-                }
-            }
-        }*/
     }
 
     public void setResponse(ModbusErrorFrame errorFrame) {

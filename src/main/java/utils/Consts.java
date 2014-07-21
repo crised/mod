@@ -61,6 +61,9 @@ public final class Consts {
     //modExceptions
     public static final String INCORRECT_RESPONSE_DATA = "Incorrect Response Data";
 
+    //Modbus Positions
+
+
 
 
 

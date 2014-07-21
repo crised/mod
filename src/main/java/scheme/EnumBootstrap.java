@@ -97,8 +97,13 @@ public class EnumBootstrap {
         // ModbusRequestlist
         // 1:1 relationship, 1 groupMessage : 1 RequestMessage
         // groupMessagesList.get(i) == modbusRequestFrameList.get(i)
-        for(GroupMessage groupMessage : groupMessagesList){
-            modbusRequestFrameList.add(new ModbusRequestFrame(groupMessage));
+        for (GroupMessage groupMessage : groupMessagesList) {
+            try {
+                modbusRequestFrameList.add(new ModbusRequestFrame(groupMessage));
+            } catch (Exception e) {
+                LOG.error(e.getMessage());
+                throw new ModException(e.getMessage());
+            }
         }
 
 
@@ -126,7 +131,7 @@ public class EnumBootstrap {
                 if ((lastRegister + 1) == parameter.getStartRegister()
                         && lastFrequency == parameter.getFrequency()
                         && lastFunctionType == parameter.getFunctionType()
-                        && lastQuantityOfRegister ==parameter.getSize()) {
+                        && lastQuantityOfRegister == parameter.getSize()) {
                     auxList.add(parameter);
                 } else {
                     groupMessagesList.add(new GroupMessage(meter, new ArrayList<>(auxList)));

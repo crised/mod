@@ -11,19 +11,33 @@ import org.slf4j.LoggerFactory;
  */
 public class IncomingHandler extends ChannelInboundHandlerAdapter {
 
-    static final Logger LOG = LoggerFactory.getLogger("TestScheme");
+    static final Logger LOG = LoggerFactory.getLogger("IncomingHandler");
 
+    @Override
+    public void channelRegistered(ChannelHandlerContext ctx) throws Exception {
+        LOG.info("");
+    }
+
+    @Override
+    public void channelActive(ChannelHandlerContext ctx) throws Exception {
+        LOG.info("");
+    }
 
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
+        LOG.info("");
+        ByteBuf in = (ByteBuf) msg;
+        while(in.isReadable()){
+            LOG.info(String.valueOf((char) in.readByte()));
+        }
+        in.release();
 
-        ByteBuf byteBuf = (ByteBuf) msg;
-        byteBuf.release();
 
 
     }
 
-
-
-
+    @Override
+    public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
+        LOG.error(cause.getMessage());
+    }
 }

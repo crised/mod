@@ -6,9 +6,10 @@ import static utils.Consts.*;
  */
 public enum Gateway {
 
-    AGROSUPER_NORTE("localhost"),
+    /*AGROSUPER_NORTE("localhost"),
     TROMEN_1("localhost"),
-    TROMEN_2("localhost");
+    TROMEN_2("localhost");*/
+    PRUEBA_CASA("192.168.1.15");
 
     private String host; // InetAddress.getByName(String host)
     private int port;

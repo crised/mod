@@ -1,14 +1,12 @@
 package scheme;
 
 
-import com.google.common.primitives.Bytes;
 import com.google.common.primitives.Ints;
 import modbus.ModbusErrorFrame;
 import modbus.ModbusResponseFrame;
-import utils.ModException;
+import utils.AppException;
 
 import java.nio.ByteBuffer;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -60,7 +58,7 @@ public class GroupMessage {
     public void setResponse(ModbusResponseFrame responseFrame) throws Exception {
 
         if (responseFrame.getByteCount() != parameterList.size() * 2)
-            throw new ModException("Quantity of Register Do Not Match");
+            throw new AppException("Quantity of Register Do Not Match");
 
         ByteBuffer regValues = responseFrame.getData();
 

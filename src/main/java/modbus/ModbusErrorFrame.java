@@ -1,6 +1,6 @@
 package modbus;
 
-import utils.ModException;
+import utils.AppException;
 
 import java.nio.ByteBuffer;
 
@@ -22,7 +22,7 @@ public class ModbusErrorFrame extends Frame {
             this.errorCode = in.get();
             this.exceptionCode = in.get();
         } catch (IndexOutOfBoundsException e){
-            throw new ModException("Bad Incoming Data");
+            throw new AppException("Bad Incoming Data");
         }
 
     }

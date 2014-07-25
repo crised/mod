@@ -33,8 +33,6 @@ public class Main {
 
             @Override
             public void run() {
-
-                LOG.info("run");
                 try {
                     for (GroupMessage groupMessage : groupMessages) {
                         if (groupMessage.isMyTurn()) {
@@ -42,7 +40,8 @@ public class Main {
                         }
                     }
                 } catch (Exception e) {
-                    LOG.error(e.getMessage());
+                    LOG.error(e.getCause().getMessage());
+
                 }
             }
         }, 0, 1, TimeUnit.SECONDS);

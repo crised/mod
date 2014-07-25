@@ -8,10 +8,11 @@ public enum Meter {
 
     //name of enum = table name - IncludeModel!
 
-    AGROSUPER_POLLOS_ELNET_LT((byte) 0x01, ELNET, Gateway.AGROSUPER_NORTE),
+   /* AGROSUPER_POLLOS_ELNET_LT((byte) 0x01, ELNET, Gateway.AGROSUPER_NORTE),
     TROMEN_ASERRADERO_ELNET_LT((byte) 0x01, ELNET, Gateway.TROMEN_1),
     TROMEN_ASERRIN_SATEC_PM_130((byte) 0x02, SATEC, Gateway.TROMEN_1),
-    TROMEN_NORTE_ELNET_LT((byte) 0x01, ELNET, Gateway.TROMEN_2);
+    TROMEN_NORTE_ELNET_LT((byte) 0x01, ELNET, Gateway.TROMEN_2);*/
+    PRUEBA_CASA((byte) 0x01, ELNET, Gateway.PRUEBA_CASA);
 
     private Byte modbusRtuAddress;
     private int meterModel;

@@ -1,8 +1,5 @@
 package scheme.enums;
 
-import com.sun.org.apache.xpath.internal.operations.Mod;
-import utils.ModException;
-
 import static utils.Consts.*;
 
 /**

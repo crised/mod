@@ -1,14 +1,11 @@
 package modbus;
 
-import com.google.common.primitives.Bytes;
-import com.google.common.primitives.Ints;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import utils.ModException;
+import utils.AppException;
 import utils.Utils;
 
 import java.nio.ByteBuffer;
-import java.util.List;
 
 /**
  * Created by crised on 7/18/14.
@@ -37,17 +34,17 @@ public class ModbusResponseFrame extends Frame {
 
             if (this.protocolId.array() !=
                     ByteBuffer.allocate(2).put(in.get()).put(in.get()).array())
-                throw new ModException("Bad Incoming Data");
+                throw new AppException("Bad Incoming Data");
 
             this.length = ByteBuffer.allocate(2).put(in.get()).put(in.get());
             this.unitId = in.get();
             this.fCode = in.get();
             this.byteCount = in.get(); //Only in response Frame.
-            if (in.remaining() % 2 != 0) throw new ModException("Register Value Should be Pair");
+            if (in.remaining() % 2 != 0) throw new AppException("Register Value Should be Pair");
             this.data = Utils.getByteBufferFromRemainingBytes(in);
         } catch (RuntimeException e) {
             LOG.error(e.getMessage());
-            throw new ModException(e.getMessage());
+            throw new AppException(e.getMessage());
         }
     }
 

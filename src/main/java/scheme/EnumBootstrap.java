@@ -1,9 +1,8 @@
 package scheme;
 
-import modbus.ModbusRequestFrame;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import utils.ModException;
+import utils.AppException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -54,7 +53,7 @@ public class EnumBootstrap {
 
         for (scheme.enums.Parameter parameter : scheme.enums.Parameter.values()) {
 
-            if (parameter.getStartReg() >= MODBUS_MAX_ADDRESS) throw new ModException();
+            if (parameter.getStartReg() >= MODBUS_MAX_ADDRESS) throw new AppException();
             switch (parameter.getMeterModel()) {
 
                 case ELNET:
@@ -67,7 +66,7 @@ public class EnumBootstrap {
                     break;
 
                 default:
-                    throw new ModException("Wrong data set");
+                    throw new AppException("Wrong data set");
             }
         }
 
@@ -84,7 +83,7 @@ public class EnumBootstrap {
                     meterList.add(new Meter(meter.name(), findGatewayByName(meter.getGateway().name()), meter.getModbusRtuAddress(), parameterList2));
                     break;
                 default:
-                    throw new ModException("Wrong data set");
+                    throw new AppException("Wrong data set");
             }
 
         }
@@ -137,7 +136,7 @@ public class EnumBootstrap {
             lastQuantityOfRegister = parameter.getSize();
 
 
-            if (auxList.size() > 120) throw new ModException("Maximum Size of Modbus Frame Exceed");
+            if (auxList.size() > 120) throw new AppException("Maximum Size of Modbus Frame Exceed");
 
             if (!iter.hasNext()) groupMessagesList.add(new GroupMessage(meter, auxList));
         }
@@ -149,7 +148,7 @@ public class EnumBootstrap {
         for (Gateway gateway : gatewayList) {
             if (gateway.getName() == name) return gateway;
         }
-        throw new ModException("Can't find Gateway");
+        throw new AppException("Can't find Gateway");
     }
 
 

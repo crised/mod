@@ -9,13 +9,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import scheme.Gateway;
 import scheme.GroupMessage;
+import utils.AppException;
 
-import java.nio.ByteBuffer;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
-import static utils.Utils.bytesToHex;
 import static utils.Consts.*;
 
 
@@ -32,8 +32,8 @@ public class NettyHelper {
 
 
     //App Vars
-    private final Map<Gateway, Bootstrap> bootstrapMap = new HashMap<>();
-    private final Map<Gateway, Channel> channelMap = new HashMap<>();
+    private final Map<Gateway, ChannelFuture> channelFutureMap = new HashMap<>();
+    private final Map<ChannelFuture, Bootstrap> bootstrapMap = new HashMap<>();
     private List<Gateway> gatewayList;
 
     public NettyHelper(List<Gateway> gatewayList) {
@@ -46,80 +46,106 @@ public class NettyHelper {
         b = new Bootstrap();
         b.group(bossGroup)
                 .channel(NioSocketChannel.class)
-                .option(ChannelOption.SO_KEEPALIVE, true) // Robustel M1000Pro Supports it.
+                        //.channel(OioSocketChannel.class)
+                .option(ChannelOption.SO_KEEPALIVE, true)
                 .handler(new ChannelInit());
 
         // 1 bootstrap object per each channel. cloned.
         // Connect all Channels
         for (Gateway gateway : this.gatewayList) {
-            bootstrapMap.put(gateway, b.clone().remoteAddress(gateway.getHost(), gateway.getPort()));
-            activateChannel(gateway);
+            Bootstrap bootstrap = b.clone();
+            ChannelFuture future = bootstrap.clone().remoteAddress(gateway.getHost(), gateway.getPort()).connect();
+            addListeners(future);
+            bootstrapMap.put(future, bootstrap);
+            channelFutureMap.put(gateway, future);
         }
-
     }
 
 
     public void sendOneGroupMessage(final GroupMessage groupMessage) {
 
-        //Ojo que el GroupMessage se clone.
-        LOG.info("sendOneGroupMessage");
+        try {
 
-        final Gateway gateway = groupMessage.getMeter().getGateway();
+            final ModbusRequestFrame request = new ModbusRequestFrame(groupMessage);
+            //LOG.info("Message is: " + utils.Utils.bytesToHex(message.array()));
 
-        final ModbusRequestFrame request = new ModbusRequestFrame(groupMessage);
-        ByteBuffer message = request.getMessageBytes();
-        LOG.info("Message is: " + utils.Utils.bytesToHex(message.array()));
+            Channel channel = getActiveChannel(groupMessage.getMeter().getGateway());
 
 
-        final Channel channel = channelMap.get(gateway);
-
-        ChannelFuture f = channel.writeAndFlush(message); //Flush immediately so 1 call equals one tcp frame.
-        f.addListener(new ChannelFutureListener() {
-            @Override
-            public void operationComplete(ChannelFuture channelFuture) throws Exception {
-                if (channelFuture.isSuccess()) {
-                    LOG.info("Could Write!");
-                    //Message were sent, so I need to write down transaction.
-                    transIdMap.put(request.getTransId().getInt(), groupMessage.hashCode());
-                } else {
-                    LOG.error("couldn't flush");
-                    channelFuture.channel().close();
-                    channelFuture.addListener(new ChannelFutureListener() {
-                        @Override
-                        public void operationComplete(ChannelFuture channelFuture) throws Exception {
-                            LOG.error("removing channel");
-                            channelMap.remove(channel); //Only once it's closed we delete it. //We avoid having 2 connections with one Gateway.
-                            activateChannel(gateway);
-                        }
-                    });
+            ChannelFuture f = channel.writeAndFlush(request.getMessageBytes()); //Flush immediately so 1 call equals one tcp frame.
+            f.addListener(new ChannelFutureListener() {
+                @Override
+                public void operationComplete(ChannelFuture channelFuture) throws Exception {
+                    if (channelFuture.isSuccess()) {
+                        LOG.info("Message flushed is: " + utils.Utils.bytesToHex(request.getMessageBytes().array()));
+                        transIdMap.put(request.getTransId().getInt(), groupMessage.hashCode());
+                    } else {
+                        throw new AppException("Couldn't flush");
+                    }
                 }
-            }
-        });
+            });
+
+        } catch (AppException e) {
+            LOG.warn("AppException: " + e.getMessage());
+        } catch (Exception e) {
+            LOG.error(e.getMessage());
+        }
+
+
     }
 
 
-    private void activateChannel(final Gateway gateway) {
+    private Channel getActiveChannel(Gateway gateway) throws Exception {
 
-        LOG.info("Activating Channel");
-        Bootstrap b = bootstrapMap.get(gateway);
+        ChannelFuture channelFuture = channelFutureMap.get(gateway);
+        if (channelFuture == null) throw new AppException(CHANNEL_INIT);
+        if (!channelFuture.isDone()) throw new AppException(FUTURE_CHANNEL_IS_NOT_DONE);
+        if (!channelFuture.isSuccess()) throw new AppException(CHANNEL_UNSUCCESSFUL);
+        if (!channelFuture.channel().isActive()) throw new AppException(CHANNEL_CLOSED);
+        return channelFuture.channel();
+    }
 
 
-        b.connect().addListener(new ChannelFutureListener() {
+    //Self Healing Channels
+    private void addListeners(final ChannelFuture future) {
+
+        //Keep Trying until it connects.
+        future.addListener(new ChannelFutureListener() {
             @Override
-            public void operationComplete(ChannelFuture channelFuture) throws Exception {
-                if (channelFuture.isSuccess()) {
-                    LOG.info("channel connected");
-                    channelMap.put(gateway, channelFuture.channel());
-                } else {
-                    LOG.error(channelFuture.cause().getMessage());
+            public void operationComplete(ChannelFuture f) throws Exception {
+                if(f.channel().isActive()) LOG.info("Channel Is Active");
+                if (!f.isSuccess()) {
+                    f.channel().eventLoop().schedule(new Runnable() {
+                        @Override
+                        public void run() {
+                            LOG.info("Retrying to Connect");
+                            ChannelFuture newFuture = bootstrapMap.get(future).connect();
+                            addListeners(newFuture);
+                        }
+                    }, 5, TimeUnit.SECONDS); //Exponential Backoff should be here.
                 }
+            }
+        });
+
+        //Reconnect When it closes.
+        future.channel().closeFuture().addListener(new ChannelFutureListener() {
+            @Override
+            public void operationComplete(final ChannelFuture f) throws Exception {
+                f.channel().eventLoop().schedule(new Runnable() {
+                    @Override
+                    public void run() {
+                        LOG.info("Retrying to Connect because Channel was closed.");
+                        ChannelFuture newFuture = bootstrapMap.get(future).connect();
+                        addListeners(newFuture);
+                    }
+                }, 5, TimeUnit.SECONDS);
             }
         });
     }
 
     public void shutDown() {
-        for (Channel channel : channelMap.values()) {
-            channel.close(); // Close the connections.
+        for (ChannelFuture channelFuture : channelFutureMap.values()) {
+            channelFuture.channel().close(); // Close the connections.
         }
         bossGroup.shutdownGracefully();
     }

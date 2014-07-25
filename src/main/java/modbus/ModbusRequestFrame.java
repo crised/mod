@@ -43,7 +43,6 @@ public class ModbusRequestFrame extends Frame {
     public ByteBuffer getMessageBytes() {
         ByteBuffer byteBuffer = ByteBuffer.allocate(12).put(transId).put(protocolId)
                 .put(length).put(unitId).put(fCode).put(data);
-        LOG.info("");
         byteBuffer.rewind();
         return  byteBuffer;
     }

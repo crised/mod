@@ -18,7 +18,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import scheme.GroupMessage;
 import scheme.Parameter;
-import utils.ModException;
+import utils.AppException;
 
 import java.nio.ByteBuffer;
 import java.util.HashMap;
@@ -46,7 +46,7 @@ public class DynamoDb {
         try {
             credentials = new ProfileCredentialsProvider().getCredentials();
         } catch (Exception e) {
-            throw new ModException("Cannot load the credentials, location (~/.aws/credentials)", e);
+            throw new AppException("Cannot load the credentials, location (~/.aws/credentials)", e);
         }
         dynamoDB = new AmazonDynamoDBAsyncClient(credentials); //asynchronous
         Region usEast1 = Region.getRegion(Regions.US_EAST_1);

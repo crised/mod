@@ -28,7 +28,7 @@ public final class Consts {
     //Once stored in DynamoDb, it's removed.
 
 
-    public static final int MODBUS_TCP_PORT = 8001; //502
+    public static final int MODBUS_TCP_PORT = 502; //502
 
 
     //Intervals
@@ -36,7 +36,7 @@ public final class Consts {
 
     //modbus 16 bit access
     public static final Byte READ_HOLDING_REGISTERS = (byte) 0x03;
-    public static final Byte READ_INPUT_REGISTERS =  (byte) 0x04; // Read-Only
+    public static final Byte READ_INPUT_REGISTERS = (byte) 0x04; // Read-Only
     public static final Integer MODBUS_MAX_ADDRESS = 65535;
 
 
@@ -82,9 +82,11 @@ public final class Consts {
 
     //Modbus Positions
 
-
-
-
+    //Apps Exceptions
+    public static final String CHANNEL_INIT = "Init Channel";
+    public static final String FUTURE_CHANNEL_IS_NOT_DONE = "Future Channel is not Done";
+    public static final String CHANNEL_UNSUCCESSFUL = "Future Channel is not Succesful!";
+    public static final String CHANNEL_CLOSED = "Channel is closed!";
 
 
 }

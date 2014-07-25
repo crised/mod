@@ -5,16 +5,21 @@ import static utils.Consts.*;
 /**
  * Created by crised on 7/17/14.
  */
-public enum Parameter  {
+public enum Parameter {
 
     //Elnet Registers
 
-    VOLTAGE_LINE_1(1, 2, ELNET), VOLTAGE_LINE_2(3, 4, ELNET), VOLTAGE_LINE_3(5, 6, ELNET),
-    CURRENT_LINE_1(13, 14, ELNET), CURRENT_LINE_2(15, 16, ELNET), APPARENT_POWER_LINE_1(19, 20, ELNET),
+    VOLTAGE_LINE_1(1, 2, ELNET), FREQUENCY_1(51, 52, ELNET),
+    // VOLTAGE_LINE_2(3, 4, ELNET), VOLTAGE_LINE_3(5, 6, ELNET),
+    //CURRENT_LINE_1(13, 14, ELNET), CURRENT_LINE_2(15, 16, ELNET), APPARENT_POWER_LINE_1(19, 20, ELNET),
 
     // Satec Registers
 
-    V1_VOLT_DEMAND(14592, 14593, SATEC), V2_VOLT_DEMAND(14594, 14595, SATEC), V3_VOLT_DEMAND(14596, 14597, SATEC);
+    V1_VOLT_DEMAND(14592,14593,SATEC),V2_VOLT_DEMAND
+
+    (14594,14595,SATEC),
+
+    V3_VOLT_DEMAND(14596,14597,SATEC);
 
 
     private Integer startReg;
@@ -25,7 +30,8 @@ public enum Parameter  {
 
 
     Parameter(int startReg, int endReg, int meterModel) throws ExceptionInInitializerError {
-        if (startReg >= MODBUS_MAX_ADDRESS || endReg >= MODBUS_MAX_ADDRESS) throw new ExceptionInInitializerError("enum");
+        if (startReg >= MODBUS_MAX_ADDRESS || endReg >= MODBUS_MAX_ADDRESS)
+            throw new ExceptionInInitializerError("enum");
         this.startReg = startReg;
         this.endReg = endReg;
         this.meterModel = meterModel;
@@ -59,4 +65,4 @@ public enum Parameter  {
     public Integer getFrequency() {
         return frequency;
     }
-}
+    }

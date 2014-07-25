@@ -87,6 +87,7 @@ public final class Consts {
     public static final String FUTURE_CHANNEL_IS_NOT_DONE = "Future Channel is not Done";
     public static final String CHANNEL_UNSUCCESSFUL = "Future Channel is not Succesful!";
     public static final String CHANNEL_CLOSED = "Channel is closed!";
+    public static final String CHANNEL_INACTIVE = "Channel is not Active!";
 
 
 }

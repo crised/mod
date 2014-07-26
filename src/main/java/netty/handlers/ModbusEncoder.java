@@ -65,7 +65,7 @@ public class ModbusEncoder extends MessageToByteEncoder<Object> {
 
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
-        LOG.warn(cause.getMessage());
+        LOG.error(cause.getMessage());
         super.exceptionCaught(ctx, cause);
     }
 }

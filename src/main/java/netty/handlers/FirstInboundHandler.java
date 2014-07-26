@@ -2,6 +2,8 @@ package netty.handlers;
 
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
+import io.netty.handler.timeout.IdleState;
+import io.netty.handler.timeout.IdleStateEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -16,13 +18,13 @@ public class FirstInboundHandler extends ChannelInboundHandlerAdapter {
     @Override
     public void channelInactive(ChannelHandlerContext ctx) throws Exception {
         LOG.info("channel Inactive!");
-        ctx.channel().close();
         super.channelInactive(ctx);
     }
 
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
         LOG.info("channel Inactive!");
+        //Reset Timer Pong
 
         super.channelRead(ctx, msg);
     }
@@ -57,9 +59,18 @@ public class FirstInboundHandler extends ChannelInboundHandlerAdapter {
 
     @Override
     public void userEventTriggered(ChannelHandlerContext ctx, Object evt) throws Exception {
-        LOG.info("channel Inactive!");
 
-        super.userEventTriggered(ctx, evt);
+        if (evt instanceof IdleStateEvent) {
+            IdleStateEvent e = (IdleStateEvent) evt;
+            if (e.state() == IdleState.READER_IDLE){
+                LOG.info("Reader Idle event - Closing Channel");
+                ctx.close();
+
+            }
+        }
+        //else if (e.state() == IdleState.WRITER_IDLE) {
+        //ctx.writeAndFlush(new PingMessage());
+
     }
 
     @Override
@@ -71,7 +82,7 @@ public class FirstInboundHandler extends ChannelInboundHandlerAdapter {
 
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
-        LOG.info("exception!");
+        LOG.error("exception!");
 
 
         super.exceptionCaught(ctx, cause);

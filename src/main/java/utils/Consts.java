@@ -82,6 +82,15 @@ public final class Consts {
 
     //Modbus Positions
 
+    //IdleTime, in seconds
+    public static final int READER_IDLE_TIME = 20;
+    public static final int WRITER_IDLE_TIME = 20;
+    public static final int ALL_IDLE_TIME = 20;
+
+
+
+
+
     //Apps Exceptions
     public static final String CHANNEL_INIT = "Init Channel";
     public static final String FUTURE_CHANNEL_IS_NOT_DONE = "Future Channel is not Done";

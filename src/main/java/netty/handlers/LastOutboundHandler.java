@@ -73,7 +73,7 @@ public class LastOutboundHandler extends ChannelOutboundHandlerAdapter {
 
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
-        LOG.info("");
+        LOG.error("");
 
         super.exceptionCaught(ctx, cause);
         LOG.warn(cause.getMessage());

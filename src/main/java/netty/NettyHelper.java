@@ -49,6 +49,8 @@ public class NettyHelper {
                         //.channel(OioSocketChannel.class)
                 .option(ChannelOption.SO_KEEPALIVE, true) //Every 2 hours
                 .option(ChannelOption.TCP_NODELAY, true) //send messages whenever they're ready.
+                .option(ChannelOption.SO_TIMEOUT, 500) //Timeout on socket blocking operations: socket read(), accept(), receive() Throws I/O Exception
+                .option(ChannelOption.CONNECT_TIMEOUT_MILLIS, 1000) //Timeout Value to Setup a Connection.
                 .handler(new ChannelInit());
 
         // 1 bootstrap object per each channel. cloned.
@@ -66,8 +68,8 @@ public class NettyHelper {
 
         final ChannelFuture future = bootstrapMap.get(gateway).connect();
 
-        //First time Called
-        if (channelFutureMap.get(gateway) == null) channelFutureMap.put(gateway, future);
+        //Replace old Value (even if it's null)
+        channelFutureMap.put(gateway, future);
 
         //Keep Trying until it connects.
         future.addListener(new ChannelFutureListener() {
@@ -81,7 +83,7 @@ public class NettyHelper {
                             doConnect(gateway);
                         }
                     }, 15, TimeUnit.SECONDS); //Exponential Backoff should be here.
-                } else{
+                } else {
                     LOG.info("Channel Connected - Adding close Listener");
                     f.channel().closeFuture().addListener(new ChannelFutureListener() {
                         @Override
@@ -90,10 +92,7 @@ public class NettyHelper {
                             doConnect(gateway);
                         }
                     });
-                }
-
-
-            }
+                }}
         });
     }
 
@@ -102,8 +101,6 @@ public class NettyHelper {
         try {
 
             final ModbusRequestFrame request = new ModbusRequestFrame(groupMessage);
-           LOG.info("sendOneGroupMessage");
-
             Channel channel = getActiveChannel(groupMessage.getMeter().getGateway());
 
 
@@ -127,13 +124,20 @@ public class NettyHelper {
         }
     }
 
+
     private Channel getActiveChannel(Gateway gateway) throws Exception {
 
         ChannelFuture channelFuture = channelFutureMap.get(gateway);
         if (channelFuture == null) throw new AppException(CHANNEL_INIT);
         if (!channelFuture.isDone()) throw new AppException(FUTURE_CHANNEL_IS_NOT_DONE);
-       // if (!channelFuture.channel().isActive()) throw new AppException(CHANNEL_INACTIVE);
-       // if (!channelFuture.channel().isOpen())   throw new AppException(CHANNEL_CLOSED);
+        if (!channelFuture.channel().isActive()) {
+            throw new AppException(CHANNEL_INACTIVE);
+        }
+        if (!channelFuture.channel().isOpen()) {
+            throw new AppException(CHANNEL_CLOSED);
+        }
+
+
 
         return channelFuture.channel();
     }

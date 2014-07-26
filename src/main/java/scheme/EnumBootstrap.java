@@ -27,12 +27,6 @@ public class EnumBootstrap {
     //List of ModbusMessages
     private final List<GroupMessage> groupMessagesList;
 
-    //List of Modbus Requests
-    //private final List<ModbusRequestFrame> modbusRequestFrameList; Wrong Because each time they have
-    // different transaction Ids.
-    //
-
-
     public EnumBootstrap() throws Exception {
 
         gatewayList = new ArrayList<>();

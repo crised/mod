@@ -1,5 +1,6 @@
 package main;
 
+import aws.DynamoDb;
 import netty.NettyHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,6 +24,7 @@ public class Main {
     static NettyHelper nettyHelper;
     static Collection<GroupMessage> groupMessages;
     static ScheduledExecutorService scheduler;
+    static DynamoDb dynamoDb;
 
 
     public static void main(String args[]) throws Exception {
@@ -37,6 +39,7 @@ public class Main {
                     for (GroupMessage groupMessage : groupMessages) {
                         if (groupMessage.isMyTurn()) {
                             nettyHelper.sendOneGroupMessage(groupMessage);
+                            dynamoDb.putItems();
                         }
                     }
                 } catch (Exception e) {
@@ -62,6 +65,7 @@ public class Main {
         nettyHelper = new NettyHelper(appData.getGatewayList());
         groupMessages = groupMessageMap.values();
         scheduler = Executors.newScheduledThreadPool(1);
+        dynamoDb = new DynamoDb();
 
     }
 }

@@ -1,9 +1,9 @@
 package modbus;
 
+import io.netty.buffer.ByteBuf;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import utils.AppException;
-import utils.Utils;
 
 import java.nio.ByteBuffer;
 
@@ -17,8 +17,7 @@ public class ModbusResponseFrame extends Frame {
     private Byte byteCount; //Only in response.
 
 
-
-    public ModbusResponseFrame(ByteBuffer in) throws Exception {
+    public ModbusResponseFrame(ByteBuf in) throws Exception {
 
         super();
 
@@ -28,24 +27,38 @@ public class ModbusResponseFrame extends Frame {
 
         //ByteBuffer.wrap(in.array(), 4, 2);
 
-        try {
-            in.rewind();
-            this.transId = (ByteBuffer) ByteBuffer.allocate(2).put(in.get()).put(in.get());
+        in.resetReaderIndex(); //readerIndex to 0
+        LOG.info(in.toString());
 
-            if (this.protocolId.array() !=
-                    ByteBuffer.allocate(2).put(in.get()).put(in.get()).array())
-                throw new AppException("Bad Incoming Data");
+        //Modbus TCP = 7 Bytes
+        this.transId = ByteBuffer.allocate(2).put(in.readByte()).put(in.readByte());
 
-            this.length = ByteBuffer.allocate(2).put(in.get()).put(in.get());
-            this.unitId = in.get();
-            this.fCode = in.get();
-            this.byteCount = in.get(); //Only in response Frame.
-            if (in.remaining() % 2 != 0) throw new AppException("Register Value Should be Pair");
-            this.data = Utils.getByteBufferFromRemainingBytes(in);
-        } catch (RuntimeException e) {
-            LOG.error(e.getMessage());
-            throw new AppException(e.getMessage());
-        }
+        //Put these separate and not in the if clause.
+        Byte protocolIdByte1 = in.readByte(); //value 0
+        Byte protocolIdByte2 = in.readByte(); //value 0
+        Byte zero = (byte) 0;
+
+        if (!protocolIdByte1.equals(zero) || !protocolIdByte2.equals(zero))
+            throw new AppException("Protocol Id Should be 0x0000");
+
+        this.length = ByteBuffer.allocate(2).put(in.readByte()).put(in.readByte());
+        this.unitId = in.readByte();
+
+        //Modbus - PDU = 2 + Data (2*N Registers)
+        this.fCode = in.readByte();
+        this.byteCount = in.readByte(); //Only in response Frame.
+
+        //LOG.info("Reader Index Should be 9: " + String.valueOf(in.readerIndex()));
+
+        int remainingBytes = in.readableBytes();
+
+        if (remainingBytes % 2 != 0) throw new AppException("Register Values Should be Pair. N*2");
+
+        byte[] bytes = new byte[remainingBytes];
+        in.readBytes(bytes);
+        this.data = ByteBuffer.wrap(bytes);
+
+
     }
 
     public Byte getByteCount() {

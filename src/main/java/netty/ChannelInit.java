@@ -4,10 +4,7 @@ import io.netty.channel.Channel;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelPipeline;
 import io.netty.handler.timeout.IdleStateHandler;
-import netty.handlers.FirstInboundHandler;
-import netty.handlers.ModbusDecoder;
-import netty.handlers.ModbusEncoder;
-import netty.handlers.LastOutboundHandler;
+import netty.handlers.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -33,6 +30,7 @@ public class ChannelInit extends ChannelInitializer {
 
         pipeline.addLast("Inbound 3", new FirstInboundHandler());
         pipeline.addLast("Inbound 4", new ModbusDecoder());
+        pipeline.addLast("Inbound 5", new AwsInboundHandler());
 
         //Inbound 1,2,3,4
         //Outbound 4,3,2,1

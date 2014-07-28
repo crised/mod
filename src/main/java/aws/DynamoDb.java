@@ -33,12 +33,11 @@ import static utils.Consts.*;
  */
 public class DynamoDb {
 
-    static final Logger LOG = LoggerFactory.getLogger("DynamoDbHelper");
+    static final Logger LOG = LoggerFactory.getLogger("DynamoDb");
     ListIterator<GroupMessage> iterator;
     AmazonDynamoDBAsyncClient dynamoDB;
 
-
-    public void initDynamoDB() throws Exception {
+    public DynamoDb() throws Exception {
 
         AWSCredentials credentials = null;
         AmazonDynamoDBAsyncClient dynamoDB = null;
@@ -51,14 +50,16 @@ public class DynamoDb {
         dynamoDB = new AmazonDynamoDBAsyncClient(credentials); //asynchronous
         Region usEast1 = Region.getRegion(Regions.US_EAST_1);
         dynamoDB.setRegion(usEast1);
+    }
+
+    private void init(){
 
     }
+
 
     public void putItems() {
 
         try {
-
-            if (dynamoDB == null) initDynamoDB();
 
             if (groupMessageQueue.size() == 0) return;
 

@@ -20,25 +20,13 @@ public class ModbusDecoder extends ByteToMessageDecoder {
     static final Logger LOG = LoggerFactory.getLogger("ModbusDecoder");
 
     @Override
-    public void channelInactive(ChannelHandlerContext ctx) throws Exception {
-        LOG.info("");
-        super.channelInactive(ctx);
-    }
-
-    @Override
     protected void decode(ChannelHandlerContext channelHandlerContext, ByteBuf byteBuf, List<Object> objects) throws Exception {
 
         byte[] bytes = new byte[byteBuf.writerIndex()];
-        byteBuf.duplicate().getBytes(0, bytes);
+        byteBuf.readBytes(bytes);
         LOG.info(Utils.bytesToHex(bytes));
-
-
-        byteBuf.release();
-
-
-
-
-
+        ModbusResponseFrame modbusResponseFrame = new ModbusResponseFrame(byteBuf);
+        objects.add(modbusResponseFrame);
     }
 
     @Override
@@ -47,4 +35,7 @@ public class ModbusDecoder extends ByteToMessageDecoder {
 
         super.exceptionCaught(ctx, cause);
     }
+
+
+
 }
